@@ -1,0 +1,2292 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manual Integral CEUG - Sistema de Gestión Escolar</title>
+    <style>
+        :root {
+            /* PALETA DE COLORES PERSONALIZABLE */
+            --color-principal: #1e3a8a;      /* Azul oscuro principal */
+            --color-secundario: #991b1b;     /* Rojo oscuro institucional */
+            --color-acento: #047857;         /* Verde oscuro para éxito */
+            --color-warning: #d97706;        /* Naranja oscuro advertencias */
+            --color-info: #2563eb;           /* Azul información */
+            --color-texto: #111827;          /* Texto principal */
+            --color-texto-secundario: #6b7280; /* Texto secundario */
+            --color-fondo: #f8fafc;          /* Fondo general */
+            --color-blanco: #ffffff;         /* Blanco puro */
+            --sombra-suave: 0 4px 12px rgba(0, 0, 0, 0.05);
+            --sombra-media: 0 8px 25px rgba(0, 0, 0, 0.08);
+            --sombra-fuerte: 0 20px 60px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--color-texto);
+            background: linear-gradient(135deg, var(--color-fondo) 0%, #e2e8f0 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* HEADER CON ESPACIO PARA LOGOS */
+        .header {
+            background: linear-gradient(135deg, var(--color-principal), #1e3a8a);
+            color: white;
+            padding: 40px 60px;
+            border-radius: 20px;
+            margin-bottom: 40px;
+            text-align: center;
+            box-shadow: var(--sombra-fuerte);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* ESPACIOS PARA LOGOS */
+        .logo-container {
+            position: absolute;
+            top: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-izquierda {
+            left: 40px;
+        }
+
+        .logo-derecha {
+            right: 40px;
+        }
+
+        .logo-placeholder {
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px dashed rgba(255, 255, 255, 0.5);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            font-weight: 700;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.95;
+            margin-bottom: 10px;
+        }
+
+        .sistema-info {
+            font-size: 0.9em;
+            opacity: 0.8;
+            margin-top: 10px;
+        }
+
+        /* NAVEGACIÓN MEJORADA */
+        .navigation {
+            background: var(--color-blanco);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 40px;
+            box-shadow: var(--sombra-suave);
+            position: sticky;
+            top: 20px;
+            z-index: 100;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .nav-btn {
+            padding: 10px 18px;
+            border: none;
+            border-radius: 8px;
+            background: #f3f4f6;
+            color: var(--color-texto);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9em;
+        }
+
+        .nav-btn:hover {
+            background: var(--color-principal);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: var(--sombra-media);
+        }
+
+        .nav-btn.active {
+            background: var(--color-principal);
+            color: white;
+        }
+
+        /* PÁGINAS */
+        .page {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* GRID DE MÓDULOS */
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .module-card {
+            background: var(--color-blanco);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: var(--sombra-media);
+            border-left: 5px solid;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, currentColor, transparent);
+            transform: translateX(-100%);
+            transition: transform 0.6s ease;
+        }
+
+        .module-card:hover::before {
+            transform: translateX(100%);
+        }
+
+        .module-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--sombra-fuerte);
+        }
+
+        /* COLORES POR TIPO DE MÓDULO */
+        .financiero { border-left-color: var(--color-secundario); }
+        .academico { border-left-color: var(--color-principal); }
+        .administrativo { border-left-color: var(--color-acento); }
+        .soporte { border-left-color: var(--color-warning); }
+
+        .module-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .module-icon {
+            font-size: 2em;
+            margin-right: 15px;
+        }
+
+        .module-title {
+            font-size: 1.4em;
+            font-weight: 700;
+            color: var(--color-texto);
+        }
+
+        .module-description {
+            color: var(--color-texto-secundario);
+            font-size: 1.1em;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .module-functions {
+            margin-bottom: 20px;
+        }
+
+        .module-functions h4 {
+            font-weight: 600;
+            color: var(--color-texto);
+            margin-bottom: 10px;
+            font-size: 0.95em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .module-functions ul {
+            list-style: none;
+        }
+
+        .module-functions li {
+            color: var(--color-texto-secundario);
+            margin-bottom: 8px;
+            position: relative;
+            padding-left: 25px;
+            line-height: 1.4;
+        }
+
+        .module-functions li:before {
+            content: "→";
+            color: var(--color-principal);
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+        }
+
+        .module-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 15px;
+            border-top: 1px solid #e5e7eb;
+            font-size: 0.85em;
+            color: var(--color-texto-secundario);
+        }
+
+        /* PÁGINAS DE MÓDULOS */
+        .module-page {
+            background: var(--color-blanco);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: var(--sombra-fuerte);
+            min-height: 600px;
+        }
+
+        .module-page-header {
+            padding: 60px;
+            color: white;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-page-header::after {
+            content: '';
+            position: absolute;
+            bottom: -50px;
+            left: -50px;
+            width: 200px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+
+        .module-page-header.financiero {
+            background: linear-gradient(135deg, var(--color-secundario), #b91c1c);
+        }
+
+        .module-page-header.academico {
+            background: linear-gradient(135deg, var(--color-principal), #1d4ed8);
+        }
+
+        .module-page-header.administrativo {
+            background: linear-gradient(135deg, var(--color-acento), #047857);
+        }
+
+        .module-page-header.soporte {
+            background: linear-gradient(135deg, var(--color-warning), #d97706);
+        }
+
+        .module-page-header h1 {
+            font-size: 2.2em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .module-page-content {
+            padding: 50px 60px;
+        }
+
+        /* TARJETAS DE PROCESO */
+        .process-card {
+            background: #f9fafb;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border-left: 4px solid var(--color-principal);
+            box-shadow: var(--sombra-suave);
+            transition: all 0.3s ease;
+        }
+
+        .process-card:hover {
+            box-shadow: var(--sombra-media);
+            transform: translateX(5px);
+        }
+
+        .process-title {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: var(--color-texto);
+            margin-bottom: 15px;
+        }
+
+        .process-location {
+            background: #dbeafe;
+            color: var(--color-principal);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.85em;
+            font-weight: 500;
+            margin-bottom: 15px;
+            display: inline-block;
+        }
+
+        .process-description {
+            color: var(--color-texto-secundario);
+            margin-bottom: 20px;
+            font-style: italic;
+            line-height: 1.5;
+        }
+
+        .process-steps {
+            background: var(--color-blanco);
+            border-radius: 8px;
+            padding: 25px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .step {
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .step:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .step-title {
+            font-weight: 600;
+            color: var(--color-texto);
+            margin-bottom: 10px;
+            font-size: 1.05em;
+        }
+
+        .step-content {
+            color: var(--color-texto-secundario);
+            font-size: 0.95em;
+            line-height: 1.6;
+        }
+
+        .step-content strong {
+            color: var(--color-texto);
+            font-weight: 600;
+        }
+
+        /* CAJAS DE RESULTADO Y ADVERTENCIA */
+        .result-box {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .result-box h4 {
+            color: var(--color-acento);
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .warning-box {
+            background: #fef3c7;
+            border: 1px solid #fcd34d;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .warning-box h4 {
+            color: var(--color-warning);
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        /* BOTÓN DE REGRESO */
+        .back-button {
+            position: fixed;
+            top: 30px;
+            left: 30px;
+            background: var(--color-principal);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            box-shadow: var(--sombra-media);
+            z-index: 1000;
+            display: none;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            background: #1d4ed8;
+            transform: translateY(-2px);
+            box-shadow: var(--sombra-fuerte);
+        }
+
+        /* FOOTER */
+        .footer {
+            background: var(--color-blanco);
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 50px;
+            text-align: center;
+            box-shadow: var(--sombra-suave);
+        }
+
+        .footer-logo {
+            margin-bottom: 20px;
+        }
+
+        .company-info {
+            color: var(--color-texto-secundario);
+            font-size: 0.9em;
+            margin-bottom: 10px;
+        }
+
+        .company-name {
+            color: var(--color-principal);
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .modules-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header, .module-page-header {
+                padding: 30px 20px;
+            }
+            
+            .module-page-content {
+                padding: 30px 20px;
+            }
+            
+            .logo-container {
+                position: static;
+                justify-content: center;
+                margin-bottom: 20px;
+            }
+            
+            .nav-buttons {
+                justify-content: flex-start;
+                overflow-x: auto;
+            }
+        }
+
+        /* ANIMACIONES */
+        @keyframes slideIn {
+            from {
+                transform: translateX(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .module-card {
+            animation: slideIn 0.6s ease forwards;
+        }
+
+        .module-card:nth-child(2) { animation-delay: 0.1s; }
+        .module-card:nth-child(3) { animation-delay: 0.2s; }
+        .module-card:nth-child(4) { animation-delay: 0.3s; }
+        .module-card:nth-child(5) { animation-delay: 0.4s; }
+        .module-card:nth-child(6) { animation-delay: 0.5s; }
+        .module-card:nth-child(7) { animation-delay: 0.6s; }
+        .module-card:nth-child(8) { animation-delay: 0.7s; }
+        .module-card:nth-child(9) { animation-delay: 0.8s; }
+    </style>
+</head>
+<body>
+    <button class="back-button" onclick="showPage('overview')">← Regresar al Menú</button>
+
+    <div class="container">
+        <!-- PÁGINA PRINCIPAL -->
+        <div id="overview" class="page active">
+            <div class="header">
+                <!-- ESPACIO PARA LOGO IZQUIERDO -->
+                <div class="logo-container logo-izquierda">
+                    <img src="data:image/png;base64,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" alt="Logo Escuela" style="width: 80px; height: 80px; border-radius: 10px;">
+                </div>
+                
+                <!-- ESPACIO PARA LOGO DERECHO -->
+                <div class="logo-container logo-derecha">
+                    <img src="data:image/png;base64,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" alt="Logo BriefData" style="width: 80px; height: 80px; border-radius: 10px;">
+                </div>
+                
+                <h1>📚 Manual Integral - Sistema CEUG</h1>
+                <p>Guía completa para la administración del Sistema de Control Escolar</p>
+                <div class="sistema-info">
+                    Versión 1.0 | Actualizado: Septiembre 2025
+                </div>
+            </div>
+
+            <div class="navigation">
+                <div class="nav-buttons">
+                    <button class="nav-btn active" onclick="showPage('overview')">🏠 Inicio</button>
+                    <button class="nav-btn" onclick="showPage('ingresos')">💰 Ingresos</button>
+                    <button class="nav-btn" onclick="showPage('egresos')">💸 Egresos</button>
+                    <button class="nav-btn" onclick="showPage('contabilidad')">📊 Contabilidad</button>
+                    <button class="nav-btn" onclick="showPage('personal')">👥 Personal</button>
+                    <button class="nav-btn" onclick="showPage('proveedores')">🏢 Proveedores</button>
+                    <button class="nav-btn" onclick="showPage('administracion')">⚙️ Administración</button>
+                    <button class="nav-btn" onclick="showPage('profesores')">👨‍🏫 Profesores</button>
+                    <button class="nav-btn" onclick="showPage('alumnos')">👨‍🎓 Alumnos</button>
+                    <button class="nav-btn" onclick="showPage('troubleshooting')">🛠️ Soporte</button>
+                    <button class="nav-btn" onclick="quickSearch()">🔍 Buscar</button>
+                    <button class="nav-btn" onclick="showInfo()">ℹ️ Info</button>
+                </div>
+            </div>
+
+            <div class="modules-grid">
+                <!-- MÓDULO INGRESOS -->
+                <div class="module-card financiero" onclick="showPage('ingresos')">
+                    <div class="module-header">
+                        <div class="module-icon">💰</div>
+                        <div class="module-title">MÓDULO INGRESOS</div>
+                    </div>
+                    <div class="module-description">
+                        Registro y control completo de pagos de alumnos con integración contable automática
+                    </div>
+                    <div class="module-functions">
+                        <h4>Funciones principales:</h4>
+                        <ul>
+                            <li>Lista de Ingresos con filtros avanzados</li>
+                            <li>Registro de pagos individuales y múltiples</li>
+                            <li>Integración automática con contabilidad</li>
+                            <li>Generación de recibos PDF y reportes Excel</li>
+                        </ul>
+                    </div>
+                    <div class="module-meta">
+                        <span>📊 USO: Diario</span>
+                        <span>🔗 CONECTA: Contabilidad, Alumnos</span>
+                    </div>
+                </div>
+
+                <!-- MÓDULO EGRESOS -->
+                <div class="module-card financiero" onclick="showPage('egresos')">
+                    <div class="module-header">
+                        <div class="module-icon">💸</div>
+                        <div class="module-title">MÓDULO EGRESOS</div>
+                    </div>
+                    <div class="module-description">
+                        Control integral de gastos institucionales
+                    </div>
+                    <div class="module-functions">
+                        <h4>Funciones principales:</h4>
+                        <ul>
+                            <li>Lista de gastos con filtros múltiples</li>
+                            <li>Registro con comprobantes</li>
+                            <li>Control de pagos a proveedores</li>
+                            <li>Integración con contabilidad</li>
+                        </ul>
+                    </div>
+                    <div class="module-meta">
+                        <span>📊 USO: Diario</span>
+                        <span>🔗 CONECTA: Contabilidad, Proveedores</span>
+                    </div>
+                </div>
+
+                <!-- MÓDULO CONTABILIDAD -->
+                <div class="module-card financiero" onclick="showPage('contabilidad')">
+                    <div class="module-header">
+                        <div class="module-icon">📊</div>
+                        <div class="module-title">SECCIÓN CONTABILIDAD</div>
+                    </div>
+                    <div class="module-description">
+                        Control financiero con ejercicios contables integrados
+                    </div>
+                    <div class="module-functions">
+                        <h4>Funciones principales:</h4>
+                        <ul>
+                            <li>Gestión de 3 cuentas institucionales</li>
+                            <li>Apertura y cierre de ejercicios</li>
+                            <li>Integración automática de movimientos</li>
+                            <li>Historial para análisis financiero</li>
+                        </ul>
+                    </div>
+                    <div class="module-meta">
+                        <span>📊 USO: Mensual</span>
+                        <span>🔗 CONECTA: Ingresos, Egresos</span>
+                    </div>
+                </div>
+
+                <!-- MÓDULO PERSONAL -->
+                <div class="module-card administrativo" onclick="showPage('personal')">
+                    <div class="module-header">
+                        <div class="module-icon">👥</div>
+                        <div class="module-title">MÓDULO PERSONAL</div>
+                    </div>
+                    <div class="module-description">
+                        Administración de usuarios y control de accesos del sistema
+                    </div>
+                    <div class="module-functions">
+                        <h4>Funciones principales:</h4>
+                        <ul>
+                            <li>Registro de personal con credenciales</li>
+                            <li>Gestión de usuarios activos/inactivos</li>
+                            <li>Niveles de acceso por módulo</li>
+                        </ul>
+                    </div>
+                    <div class="module-meta">
+                        <span>📊 USO: Mensual</span>
+                        <span>🔗 CONECTA: Todos los módulos</span>
+                    </div>
+                </div>
+
+                <!-- MÓDULO PROVEEDORES -->
+                <div class="module-card administrativo" onclick="showPage('proveedores')">
+                    <div class="module-header">
+                        <div class="module-icon">🏢</div>
+                        <div class="module-title">MÓDULO PROVEEDORES</div>
+                    </div>
+                    <div class="module-description">
+                        Gestión integral de proveedores con control de pagos
+                    </div>
+                    <div class="module-functions">
+                        <h4>Funciones principales:</h4>
+                        <ul>
+                            <li>Registro completo de proveedores</li>
+                            <li>Gestión de proveedores activos</li>
+                            <li>Registro directo de pagos</li>
+                            <li>Historial de movimientos</li>
+                        </ul>
+                    </div>
+                    <div class="module-meta">
+                        <span>📊 USO: Semanal</span>
+                        <span>🔗 CONECTA: Egresos</span>
+                    </div>
+                </div>
+
+                <!-- MÓDULO ADMINISTRACIÓN -->
+                <div class="module-card administrativo" onclick="showPage('administracion')">
+                    <div class="module-header">
+                        <div class="module-icon">⚙️</div>
+                        <div class="module-title">MÓDULO ADMINISTRACIÓN</div>
+                    </div>
+                    <div class="module-description">
+                        Configuración de catálogos base del sistema
+                    </div>
+                    <div class="module-functions">
+                        <h4>9 catálogos principales:</h4>
+                        <ul>
+                            <li>Programas académicos y materias</li>
+                            <li>Cuotas, Sedes, Salones, Grupos</li>
+                            <li>Categorías profesores, Estatus de Alumnos</li>
+                            <li>Cuatrimestres, Giros comerciales</li>
+                        </ul>
+                    </div>
+                    <div class="module-meta">
+                        <span>📊 USO: Por período</span>
+                        <span>🔗 CONECTA: Todos los módulos</span>
+                    </div>
+                </div>
+
+                <!-- MÓDULO PROFESORES -->
+                <div class="module-card academico" onclick="showPage('profesores')">
+                    <div class="module-header">
+                        <div class="module-icon">👨‍🏫</div>
+                        <div class="module-title">MÓDULO PROFESORES</div>
+                    </div>
+                    <div class="module-description">
+                        Gestión del personal docente y control académico
+                    </div>
+                    <div class="module-functions">
+                        <h4>5 secciones principales:</h4>
+                        <ul>
+                            <li>Asignación de materias y horarios</li>
+                            <li>Registro de profesores</li>
+                            <li>Control de asistencias</li>
+                            <li>Gestión de calificaciones</li>
+                        </ul>
+                    </div>
+                    <div class="module-meta">
+                        <span>📊 USO: Diario</span>
+                        <span>🔗 CONECTA: Alumnos</span>
+                    </div>
+                </div>
+
+                <!-- MÓDULO ALUMNOS -->
+                <div class="module-card academico" onclick="showPage('alumnos')">
+                    <div class="module-header">
+                        <div class="module-icon">👨‍🎓</div>
+                        <div class="module-title">MÓDULO ALUMNOS</div>
+                    </div>
+                    <div class="module-description">
+                        Control estudiantil con expedientes y seguimiento académico
+                    </div>
+                    <div class="module-functions">
+                        <h4>3 secciones principales:</h4>
+                        <ul>
+                            <li>Gestión de alumnos con documentación</li>
+                            <li>Expedientes con historial académico</li>
+                            <li>Control de calificaciones</li>
+                            <li>Integración con pagos</li>
+                        </ul>
+                    </div>
+                    <div class="module-meta">
+                        <span>📊 USO: Diario</span>
+                        <span>🔗 CONECTA: Profesores, Ingresos</span>
+                    </div>
+                </div>
+
+                <!-- MÓDULO SOPORTE -->
+                <div class="module-card soporte" onclick="showPage('troubleshooting')">
+                    <div class="module-header">
+                        <div class="module-icon">🛠️</div>
+                        <div class="module-title">SOLUCIÓN DE PROBLEMAS</div>
+                    </div>
+                    <div class="module-description">
+                        Guía de problemas frecuentes y soluciones
+                    </div>
+                    <div class="module-functions">
+                        <h4>Incluye:</h4>
+                        <ul>
+                            <li>Errores comunes por módulo</li>
+                            <li>Soluciones paso a paso</li>
+                            <li>Procedimientos de emergencia</li>
+                        </ul>
+                    </div>
+                    <div class="module-meta">
+                        <span>📊 USO: Cuando sea necesario</span>
+                        <span>🔗 REFERENCIA: Todos los módulos</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FOOTER -->
+            <div class="footer">
+                <div class="company-info">
+                    Sistema desarrollado por
+                </div>
+                <div class="footer-logo">
+                    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHgAAAA8CAYAAACtrX6oAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAu/SURBVHgB7ZoJUFXXGcfPgwcIIiK7ICq4K9YFExWjaIwYl0YbR6dNHK3VyaTtjJMmnTTtODWpSa2dTDqJnaTNRGtjx2Rsx2hc6hIbcBcE3PcFcUEBERAX4PFef9/1Prggi/DQMZnzn7nz3r33LN/5lv/3nfOeUhoaGhoaGhoaGhoaGhoaGhoaGhoaGhoaGhoaGhoaGhoaGhoa3wPYWvhOo5XR2sr24nLJ1bVr12EdOnRIqqqqCpF57HZ78Z07dzJOnjyZarb15qpSGo8UrWlgO5djwIABr3bs2DHl6tWrqdeuXUtt06bNJS8vL1dZWVlkTEzMiPDw8JS7d++e2r1790KljfydgRjKPmXKlIzExMSp5rP6nMd41rdv36HTpk072q5du1B1P+qfFNhUjdyPIpV4NfD9iYYY12vmzJk5RG6Aqq2k+mAz+6hJkyadNo3sXee9rZG+TcGqOLt6eBj9IiMj2/bu3Xt2E21banwbYyf269dvhHpMaI4C6oMopQpD7dm8eXP/wsLCcnU/BzcGeS+07Ldx48aeU6dOzV67du0gZaHr4ODg9ihh8b1794q5tQHfysrKrEOHDv3LbOdsZB5nz549JwQGBg7Oysp6Tz0cxGDOhISEIT169MgICAhQpJXDLperEgd8lzqiUOZFDjJN2XrqiK2qxhGd6uHh6tKlyxbG9j927Fhb9RjgKQ3ZoOSfeHt7u9LT079UTRvXOq9r2LBhb96+fXufv7//JPr/xv1y8ODBfwkLC3uNwkzJhWIVBlZ+fn75N2/ejElNTXU7Sb2YPHnyIYyUsHr1au+Hladz587BgwYNKmIe140bN57fv3//1lGjRmUy/2CcxZDB6XQqjC7ty/Ly8pIzMzOzVDPriOTk5FzG9N++fXu4egzwNA+42rdvPw3jfGF5ZlWqTwP9vLp16xYbHx+/5MiRI/uJkgiq7jbKdDgitwRjqvPnz49h7DgKshgMu4gqPALl7FKNK9Rnw4YNA9PS0oLqyNLoOqDm9xwOh7p+/fpwMa48xNjFPj4+zr1793bkWcSBAwe6FhUVvYORA0lHmTjEENW8CDbmUo8RHhkYuumD4rPNW0Nw6LUdtFswcODAedxW1tNN0kIVFHz21KlT43v16vUmSjuP4cYpy+JhBQUdXqESz4H681Dy7zH8PiJzSPfu3f3MZjb3GnCQYKr0TjIn733Ly8t9LGu0mW2iaNPT0t/45FkoTjYMKq64ePHiJaI53hj8PlwFBQXFyFFA1Obu2bPn7bNnz8ZLJMfGxu62jO9Od7ZOnTrF8C7aumae+RMMHWRp9LXBChFmzeLtlo/7MJy+cx1deQSPBmALlFRSUpJqeWSLiIjoQSSEocxPDh48+Jmqnavk0zFixIilpaWlX6G8WNHgrVu30qDpUbxbXz0QlIiRHdb5aBOBEZwouMLdDMX59e/fP51ISwgKClJEfDjKXf8DsGbNGiPPkVtjMeIBWCGC/KcYQ0VFRS3btWvXvKeeemoRbLKAyFWki7vIdoV5FAboxzpK6yxZHNCGY15o27btzxhjOTuCecePH/9U1sVYL8MEnyK3GE52C0VsF1NgqUzSUQnzBuDMTlnDuHHjrjOPY9WqVT7I35tg2YlsYSJfnz59HLT7FU79V9NGDtVCeGRgBOxABF81b428iiLfuHLlylL2umemT5/uysnJeSEjI0MMZ+QqlJ1ElD9H/vpFXFxcP7zZhbEvo/xA69j0V+ThF2l7iSZ3+XwLxcSz8LfUfUUbkYtSS2lrZ4xvmfd/p0+fLpTI4Jm8t6O4cCI2l+hX9F2JvMeio6NfwUBzU1JS4rZu3TqedhUwwyvIEE0E/47PIIx2fPjw4YH1LNswMnOtZq3LQkJCpnH/dww4n+8fImt5bm7uEowciLP/Ekc/gNz9cErZPiazjvk4r/3cuXNLuE/HQbvjYCcqKioUTLUCJ8vl2Ru0Wzp69Oj21BsPWyjWC48MTNTIR/W+EUUOxIOfZzE/xBNTqGKfQcGfjR079m2+P0t1+wILf5XcOgfnSKBoMSgZOjUKGCtYsOTF9319fY1oFgNJOxY+j8LuAxykcuTIkV/w3I7hZhO5n7v70l5ytIztIBq2SF8M34V5c+U9FewSip3ljDUHAyTigIsY61kYKQLW+ZPZ16DoBpbuIuLLydGVpBahXYUxP0TmW8wVkp2dbUQcW6L3Md4F5ti1adMmOdHbxrwvSYQfPnx4gbSZOHFinhSQ6KwPMp6UZ0T8QnYmN6WCx8k/wvC3VAvhkYGJmiIMEMvXi1wOKOkAyhpJrhlA/qzEiIknTpxYwAJD8fBCjGi/fPnyf1GCj2kEqUptLKIz45RZxybCbGxH5kDfOdKPxd6RyMOpZmOYvTQZgkHG8e6qadxa1azQsABl9qU4uwNt/wPGiHK3QYYqxhaqngXL7JetmFkhi9dWNLF0GydyYcjsCyMchTEShVqJ/h+zXjedivw5HNd+zvpmkT5CRF+mnEbxh1NE4iBRVO0rTOMaLCifRPgsAuJr+idj4A2qhfDIwHjeToR8CaOlJiUlfYSyJRcJ7RqLRMkOdBBFkZKPwRdBYc8QhRsxTJBEI0p1ohgHBksuLi5Ot44tRRZtdlDcnJf7/Px8WfSeMWPGxJEfJV8rcqQ3dOr27lqVtRyPur8jlxfj9cc52ppGlByrkM2J8var5sFwJJjhXam6cZLljN1VDIy8+arGSPf3U2Vl19CRzOVXdyCe2UUeIv+S+ahaZsYtEIZkDn/lATwyMJR3BsrpRc4IIeJ+xEHEBKJ2NK/Kre14Fkhe2k1++RJDxuP9vvIcA8vzFUOHDl1MFP5B1SjHgES3ZRj38+pIFwdpaA1uekVBeThUR5QfzWGMOJ7kZnc+qDVfA+PIh9V5qijEXiZnz8UAl0nVO2GorkKz0PHH6ORpVZO25EeXn8s7HOCB7RSBkcduoxzHf53bhaYshkw40AfoS5zTo7N6T8twG0KsgUZGXbhw4Y8suhtR+4DC5JlED1cMRjMSN4I78WAf6LwbdHlF1d5P2iTCGXcEjtMJ5Yin3+Z+KmNMpP0Rs131FqiuXGakSkp4EWpOJ8ru8UPIT2HrM6GhoTOg+9fJe6PIhTsbWpyMgXFspJ5hcs/3cLZQv4ZWh8Mcrh07diTw2BuKzyHffoMzPAeyqZznszx/2q4kEtvJyZhVNst3YZDXYLBPJkyYUIisc5GvgOLtz4w1vJ72zYbHBmbz/x+q0W3kmxl44iwEbLKkFwrHsL05jPgtP1Bkr1u3rtZRJYZvI/SE9/9TqE8U7T5J4pL9aKK0gxn8afsAheEUQbwSSqyioMogf0+EJjdR8K2U8YRauW5C+yfdfTBCIJevskQrkR/A+F4cX+4wFosMkttxvnTYKpn862YqO+wwDiNtwfAp5E6jPY4oKeos6aC7m434HoAMbovb9+3b9zeq5WBy9GL2wF+JfBLx0HaWHLcig0dnFa3xi4k4iQvPzSIiklHSTISUQ9tQlJyPwW0o/DbKLIKaizGO7JGjqFY/Hj9+/AkWKHtp2W9WWWTypc0cjFlNxyjIl8i5BFNsU+Z5NG2eRtkljHlK1VCtHDvGIUMsgZWmahxHTs/Go7hIlH6GfO4+pDBoEeeM5urGGtLc41CAhWGwGcxdosyzaAz8LZFWZOnrsujBATPEIudQLifp6Bsq/DIYYDJU/rUpW1/G8aMgyzb7CqNVoptAHHE0a27H+z2s8yJbyhlHjx79t1sFqgVorZ/ERIkutkPboKRllPlpVI4zENofL/dC8FIKrSIoVmgone1PJCdZK4ngsbyXIqk5x33VlaayGLWB79Z829A4ddFYn6b6NpbT6zpEU/O43zdZJzSGVv/Bn/PZWdDvGCI3kwr4IN54A/pxkWuwd3hPaCcRL71O5L6j9A/+jxyP8i87AzFsEsYMltwJZZUR3dlQzy7L3M09qNf4DuBR/FNCQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0PjScD/AV87kS2ioaXwAAAAAElFTkSuQmCC" style="width: 120px; height: 60px; margin: 0 auto;">
+                </div>
+                <div class="company-info" style="margin-top: 10px;">
+                    © Todos los derechos reservados
+                </div>
+            </div>
+        </div>
+
+        <!-- PÁGINA MÓDULO INGRESOS -->
+        <div id="ingresos" class="page">
+            <div class="module-page">
+                <div class="module-page-header financiero">
+                    <h1>💰 MÓDULO INGRESOS</h1>
+                    <p>Guía completa para el registro y control de pagos</p>
+                </div>
+                
+                <div class="module-page-content">
+                    <h2 style="color: var(--color-secundario); margin-bottom: 30px;">📋 Lista de Ingresos</h2>
+                    
+                    <div class="process-card">
+                        <div class="process-title">🔍 CONSULTAR LISTA DE INGRESOS</div>
+                        <div class="process-location">📍 Ubicación: Módulo Ingresos → Lista de Ingresos</div>
+                        <div class="process-description">
+                            Vista principal con generación de reportes Excel y consulta detallada con filtros múltiples.
+                        </div>
+                        
+                        <div class="process-steps">
+                            <div class="step">
+                                <div class="step-title">📊 SECCIÓN REPORTES EXCEL:</div>
+                                <div class="step-content">
+                                    <strong>Campos disponibles:</strong><br>
+                                    • <strong>Rango de fechas:</strong> Fecha inicial y final del período<br>
+                                    • <strong>Botón "Generar Excel":</strong> Descarga automática<br><br>
+                                    
+                                    <strong>Contenido del reporte:</strong><br>
+                                    • Fecha de cobro, Alumno, Concepto, Monto<br>
+                                    • Total general al final del archivo<br>
+                                    • Filtrado según rango de fechas definido
+                                </div>
+                            </div>
+                            
+                            <div class="step">
+                                <div class="step-title">🔍 SECCIÓN CONSULTA EN PANTALLA:</div>
+                                <div class="step-content">
+                                    <strong>Filtros disponibles:</strong><br>
+                                    • <strong>Rango de fechas:</strong> Independiente del Excel<br>
+                                    • <strong>Alumno:</strong> Para consultas individualizadas<br>
+                                    • <strong>Filtro por cuenta:</strong> Cuenta bancaria específica<br>
+                                    • <strong>Filtro por cuotas:</strong> Tipo de concepto<br>
+                                    • <strong>Buscador de texto:</strong> Busca en todas las columnas<br><br>
+                                    
+                                    <strong>Herramientas por registro:</strong><br>
+                                    • ✏️ <strong>Editar:</strong> Modificar datos del pago<br>
+                                    • 🗑️ <strong>Borrar:</strong> Eliminar registro<br>
+                                    • 📄 <strong>Recibo:</strong> Generar comprobante PDF
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="result-box">
+                            <h4>✅ RESULTADO:</h4>
+                            Vista completa de ingresos con herramientas de filtrado, edición y generación de reportes Excel
+                        </div>
+                    </div>
+
+                    <h2 style="color: var(--color-secundario); margin-bottom: 30px;">💳 Registro de Ingresos</h2>
+
+                    <div class="process-card">
+                        <div class="process-title">💳 REGISTRAR PAGO DE ALUMNO</div>
+                        <div class="process-location">📍 Ubicación: Módulo Ingresos → Registro de Ingresos</div>
+                        <div class="process-description">
+                            Formulario para capturar pagos con integración automática al sistema contable.
+                        </div>
+                        
+                        <div class="process-steps">
+                            <div class="step">
+                                <div class="step-title">📝 CAMPOS DEL FORMULARIO:</div>
+                                <div class="step-content">
+                                    <strong>Información del alumno:</strong><br>
+                                    • <strong>Nombre:</strong> Lista desplegable con alumnos registrados<br>
+                                    • <strong>Fecha del pago:</strong> Fecha actual o específica<br><br>
+                                    
+                                    <strong>Clasificación académica:</strong><br>
+                                    • <strong>Concepto:</strong> Tipo de cuota (Inscripción, Colegiatura, etc.)<br>
+                                    • <strong>Ciclo:</strong> Período académico<br>
+                                    • <strong>Cuatrimestre:</strong> Período específico<br><br>
+                                    
+                                    <strong>Información financiera:</strong><br>
+                                    • <strong>Forma de pago:</strong> Efectivo, Transferencia, Cheque<br>
+                                    • <strong>Cuenta:</strong> Cuenta bancaria de destino
+                                </div>
+                            </div>
+                            
+                            <div class="step">
+                                <div class="step-title">➕ PAGOS MÚLTIPLES:</div>
+                                <div class="step-content">
+                                    • <strong>Botón "Agregar":</strong> Permite registrar múltiples conceptos<br>
+                                    • Útil cuando un alumno paga varios meses juntos<br>
+                                    • Todos los pagos se procesan en una sola operación<br>
+                                    • <strong>Botón "Guardar":</strong> Procesa todos los pagos capturados
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="result-box">
+                            <h4>✅ RESULTADOS AUTOMÁTICOS:</h4>
+                            • Pago en Lista de Ingresos • Suma a Contabilidad • Recibo disponible • Historial actualizado
+                        </div>
+                        
+                        <div class="warning-box">
+                            <h4>⚠️ VERIFICACIONES IMPORTANTES:</h4>
+                            • Confirmar aparición en lista • Verificar suma en contabilidad • Generar recibo inmediatamente
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PÁGINA MÓDULO EGRESOS -->
+        <div id="egresos" class="page">
+            <div class="module-page">
+                <div class="module-page-header financiero">
+                    <h1>💸 MÓDULO EGRESOS</h1>
+                    <p>Control integral de gastos institucionales</p>
+                </div>
+                
+                <div class="module-page-content">
+                    <h2 style="color: var(--color-secundario); margin-bottom: 30px;">📋 Lista de Gastos</h2>
+                    
+                    <div class="process-card">
+                        <div class="process-title">🔍 CONSULTAR GASTOS REGISTRADOS</div>
+                        <div class="process-location">📍 Ubicación: Módulo Egresos → Lista de Gastos</div>
+                        <div class="process-description">
+                            Sistema de consulta con filtros avanzados y generación de reportes Excel.
+                        </div>
+                        
+                        <div class="process-steps">
+                            <div class="step">
+                                <div class="step-title">📊 REPORTES Y CONSULTAS:</div>
+                                <div class="step-content">
+                                    <strong>Generación de Excel:</strong><br>
+                                    • Definir rango de fechas para reporte<br>
+                                    • Botón "Generar Excel" para descarga automática<br><br>
+                                    
+                                    <strong>Consulta en pantalla:</strong><br>
+                                    • Segundo rango de fechas para listado<br>
+                                    • Botón "Consultar" para mostrar resultados<br>
+                                    • Tabla con: Fecha, Proveedor, Concepto, Monto
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="result-box">
+                            <h4>✅ CAPACIDADES:</h4>
+                            Vista completa de gastos • Filtrado múltiple • Exportación Excel • Herramientas de edición
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PÁGINA MÓDULO CONTABILIDAD -->
+        <div id="contabilidad" class="page">
+            <div class="module-page">
+                <div class="module-page-header financiero">
+                    <h1>📊 MÓDULO CONTABILIDAD</h1>
+                    <p>Control financiero institucional con ejercicios contables</p>
+                </div>
+                
+                <div class="module-page-content">
+                    <h2 style="color: var(--color-secundario); margin-bottom: 30px;">🏦 Gestión de Cuentas</h2>
+                    
+                    <div class="process-card">
+                        <div class="process-title">📊 CONSULTAR ESTADO DE CUENTAS</div>
+                        <div class="process-location">📍 Ubicación: Módulo Ingresos → Contabilidad</div>
+                        <div class="process-description">
+                            Vista principal con información de las 3 cuentas institucionales.
+                        </div>
+                        
+                        <div class="process-steps">
+                            <div class="step">
+                                <div class="step-title">📋 INFORMACIÓN POR CUENTA:</div>
+                                <div class="step-content">
+                                    <strong>Datos mostrados:</strong><br>
+                                    • <strong>Nombre de cuenta:</strong> Identificación específica<br>
+                                    • <strong>Fecha última apertura:</strong> Cuándo se abrió ejercicio actual<br>
+                                    • <strong>Estado:</strong> Abierto (recibe movimientos) o Cerrado<br><br>
+                                    
+                                    <strong>Acciones disponibles:</strong><br>
+                                    • 📂 <strong>Abrir/Cerrar ejercicio:</strong> Gestión de períodos contables<br>
+                                    • 📋 <strong>Consultar historial:</strong> Ver ejercicios anteriores
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="result-box">
+                            <h4>✅ CONTROL:</h4>
+                            Estado de todas las cuentas • Control de ejercicios • Acceso a historiales • Base para decisiones
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PÁGINA MÓDULO PERSONAL -->
+        <div id="personal" class="page">
+            <div class="module-page">
+                <div class="module-page-header administrativo">
+                    <h1>👥 MÓDULO PERSONAL</h1>
+                    <p>Administración de usuarios y control de accesos</p>
+                </div>
+                
+                <div class="module-page-content">
+                    <h2 style="color: var(--color-acento); margin-bottom: 30px;">📝 Registro de Personal</h2>
+                    
+                    <div class="process-card">
+                        <div class="process-title">👤 REGISTRAR NUEVO USUARIO</div>
+                        <div class="process-location">📍 Ubicación: Módulo Personal → Registro de nuevo personal</div>
+                        <div class="process-description">
+                            Formulario para registrar personal con credenciales y clasificación organizacional.
+                        </div>
+                        
+                        <div class="process-steps">
+                            <div class="step">
+                                <div class="step-title">📝 INFORMACIÓN PERSONAL:</div>
+                                <div class="step-content">
+                                    <strong>Datos básicos:</strong><br>
+                                    • <strong>Nombre:</strong> Primer nombre de la persona<br>
+                                    • <strong>Apellido paterno:</strong> Primer apellido oficial<br>
+                                    • <strong>Apellido materno:</strong> Segundo apellido<br><br>
+                                    
+                                    <strong>Credenciales de acceso:</strong><br>
+                                    • <strong>Mail:</strong> Correo institucional (será el usuario)<br>
+                                    • <strong>Contraseña:</strong> Contraseña inicial del sistema
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="result-box">
+                            <h4>✅ RESULTADO:</h4>
+                            Usuario creado • Acceso habilitado • Permisos básicos asignados • Listo para configuración
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PÁGINA MÓDULO PROVEEDORES -->
+        <div id="proveedores" class="page">
+            <div class="module-page">
+                <div class="module-page-header administrativo">
+                    <h1>🏢 MÓDULO PROVEEDORES</h1>
+                    <p>Gestión integral de proveedores con control de pagos</p>
+                </div>
+                <div class="module-page-content">
+                    <h2 style="color: var(--color-acento); margin-bottom: 30px;">📝 Registro de Proveedores</h2>
+                    
+                    <div class="process-card">
+                        <div class="process-title">🏢 REGISTRAR NUEVO PROVEEDOR</div>
+                        <div class="process-location">📍 Ubicación: Módulo Proveedores → Registro de Proveedor</div>
+                        <div class="process-description">
+                            Formulario completo para registro de proveedores con datos generales, localización y contacto.
+                        </div>
+                        
+                        <div class="process-steps">
+                            <div class="step">
+                                <div class="step-title">📋 DATOS GENERALES:</div>
+                                <div class="step-content">
+                                    <strong>Información básica del proveedor:</strong><br>
+                                    • <strong>Nombre completo o denominación social:</strong> Razón social completa<br>
+                                    • <strong>RFC:</strong> Registro Federal de Contribuyentes<br>
+                                    • <strong>Giro:</strong> Seleccionar del catálogo de giros registrados<br>
+                                    &nbsp;&nbsp;&nbsp;→ El giro debe estar previamente en Administración → Giros
+                                </div>
+                            </div>
+                            
+                            <div class="step">
+                                <div class="step-title">📍 DATOS DE LOCALIZACIÓN:</div>
+                                <div class="step-content">
+                                    <strong>Dirección completa del proveedor:</strong><br>
+                                    • <strong>Dirección:</strong> Calle y número<br>
+                                    • <strong>Colonia:</strong> Colonia o fraccionamiento<br>
+                                    • <strong>C.P.:</strong> Código postal de 5 dígitos<br>
+                                    • <strong>País:</strong> Seleccionar de lista<br>
+                                    • <strong>Estado:</strong> Entidad federativa<br>
+                                    • <strong>Municipio:</strong> Municipio o delegación
+                                </div>
+                            </div>
+                            
+                            <div class="step">
+                                <div class="step-title">📞 DATOS DE CONTACTO:</div>
+                                <div class="step-content">
+                                    <strong>Información del contacto principal:</strong><br>
+                                    • <strong>Nombre completo:</strong> Nombre del contacto directo<br>
+                                    • <strong>Teléfono:</strong> Número con 10 dígitos<br>
+                                    • <strong>Correo:</strong> Email válido para notificaciones<br><br>
+                                    
+                                    <strong>Importante:</strong> Estos datos serán usados para comunicación oficial
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="result-box">
+                            <h4>✅ RESULTADO:</h4>
+                            • Proveedor disponible en lista • Listo para registro de pagos • Historial iniciado • Datos para facturación completos
+                        </div>
+                    </div>
+
+                    <h2 style="color: var(--color-acento); margin-bottom: 30px;">📋 Lista de Proveedores</h2>
+
+                    <div class="process-card">
+                        <div class="process-title">👁️ VISUALIZAR Y GESTIONAR PROVEEDORES</div>
+                        <div class="process-location">📍 Ubicación: Módulo Proveedores → Lista de Proveedores</div>
+                        <div class="process-description">
+                            Vista principal con todos los proveedores registrados y herramientas de gestión por cada uno.
+                        </div>
+                        
+                        <div class="process-steps">
+                            <div class="step">
+                                <div class="step-title">📊 INFORMACIÓN MOSTRADA:</div>
+                                <div class="step-content">
+                                    <strong>Tabla principal con columnas:</strong><br>
+                                    • Nombre/Razón social del proveedor<br>
+                                    • RFC del proveedor<br>
+                                    • Giro comercial<br>
+                                    • Teléfono de contacto<br>
+                                    • Íconos de acción para cada proveedor
+                                </div>
+                            </div>
+                            
+                            <div class="step">
+                                <div class="step-title">🛠️ ÍCONOS DE ACCIÓN:</div>
+                                <div class="step-content">
+                                    <strong>Por cada proveedor en la lista:</strong><br>
+                                    • ✏️ <strong>Editar:</strong> Modificar datos del proveedor<br>
+                                    • 🗑️ <strong>Eliminar:</strong> Borrar proveedor del sistema<br>
+                                    • 💳 <strong>Registrar pago:</strong> Ícono de tarjeta de crédito pequeña<br>
+                                    • 📋 <strong>Ver historial:</strong> Consultar movimientos del proveedor<br>
+                                    • 📊 <strong>Generar Excel:</strong> Ícono de lápiz para reporte de movimientos
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="result-box">
+                            <h4>✅ CAPACIDADES:</h4>
+                            Vista completa de proveedores • Acceso rápido a pagos • Generación de reportes • Gestión centralizada
+                        </div>
+                    </div>
+
+                    <h2 style="color: var(--color-acento); margin-bottom: 30px;">💳 Registro de Pagos a Proveedores</h2>
+
+                    <div class="process-card">
+                        <div class="process-title">💳 REGISTRAR PAGO DESDE PROVEEDORES</div>
+                        <div class="process-location">📍 Ubicación: Lista de Proveedores → Ícono 💳 (tarjeta de crédito)</div>
+                        <div class="process-description">
+                            Formulario rápido para registrar pagos directamente desde el módulo de proveedores.
+                        </div>
+                        
+                        <div class="process-steps">
+                            <div class="step">
+                                <div class="step-title">📝 FORMULARIO DE PAGO:</div>
+                                <div class="step-content">
+                                    <strong>Al hacer clic en el ícono 💳 se abre formulario con:</strong><br>
+                                    • <strong>Proveedor:</strong> Pre-llenado con el proveedor seleccionado<br>
+                                    • <strong>Fecha:</strong> Fecha en que se realizó el gasto<br>
+                                    • <strong>Factura/Referencia:</strong> Número de documento comprobatorio<br>
+                                    • <strong>Cantidad:</strong> Número de items o servicios<br>
+                                    • <strong>Concepto:</strong> Descripción detallada del pago<br>
+                                    • <strong>Monto:</strong> Cantidad total a pagar<br>
+                                    • <strong>Forma de Pago:</strong> Efectivo, Transferencia, Cheque<br>
+                                    • <strong>Cuenta Origen:</strong> De qué cuenta sale el dinero<br>
+                                    • <strong>Fecha de pago:</strong> Cuándo se efectúa el pago
+                                </div>
+                            </div>
+                            
+                            <div class="step">
+                                <div class="step-title">🔄 INTEGRACIÓN AUTOMÁTICA:</div>
+                                <div class="step-content">
+                                    <strong>Al guardar el pago:</strong><br>
+                                    • Se registra automáticamente en Módulo Egresos<br>
+                                    • Se resta del ejercicio contable abierto<br>
+                                    • Se agrega al historial del proveedor<br>
+                                    • Queda disponible para reportes
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="warning-box">
+                            <h4>⚠️ IMPORTANTE:</h4>
+                            • Verificar cuenta origen correcta • Subir comprobante en Egresos si es necesario • Confirmar resta en contabilidad
+                        </div>
+                    </div>
+
+                    <h2 style="color: var(--color-acento); margin-bottom: 30px;">📊 Reportes y Consultas</h2>
+
+                    <div class="process-card">
+                        <div class="process-title">📊 GENERAR REPORTES DE PROVEEDORES</div>
+                        <div class="process-location">📍 Ubicación: Lista de Proveedores → Íconos de reporte</div>
+                        <div class="process-description">
+                            Dos tipos de reportes disponibles: general de todos los proveedores e individual por proveedor.
+                        </div>
+                        
+                        <div class="process-steps">
+                            <div class="step">
+                                <div class="step-title">📋 REPORTE GENERAL (Ícono lápiz):</div>
+                                <div class="step-content">
+                                    <strong>Desde la vista principal de proveedores:</strong><br>
+                                    • Clic en ícono de lápiz ✏️ en la barra superior<br>
+                                    • Genera Excel con movimientos de TODOS los proveedores<br>
+                                    • Incluye: Fecha, Proveedor, Concepto, Monto<br>
+                                    • Útil para análisis general de gastos por proveedor
+                                </div>
+                            </div>
+                            
+                            <div class="step">
+                                <div class="step-title">📄 HISTORIAL INDIVIDUAL:</div>
+                                <div class="step-content">
+                                    <strong>Por cada proveedor específico:</strong><br>
+                                    • Clic en ícono de historial 📋 del proveedor<br>
+                                    • Abre vista con todos los movimientos del proveedor<br>
+                                    • Muestra: Fechas, Conceptos, Montos, Formas de pago<br>
+                                    • Desde esta vista se puede generar Excel individual<br>
+                                    • Útil para estado de cuenta por proveedor
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="result-box">
+                            <h4>✅ USOS DE REPORTES:</h4>
+                            • Control de gastos por proveedor • Estados de cuenta • Análisis de compras • Auditorías • Negociaciones
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PÁGINA MÓDULO ADMINISTRACIÓN -->
+        <div id="administracion" class="page">
+            <div class="module-page">
+                <div class="module-page-header administrativo">
+                    <h1>⚙️ MÓDULO ADMINISTRACIÓN</h1>
+                    <p>Configuración de catálogos base del sistema educativo</p>
+                </div>
+                <div class="module-page-content">
+                    <h2 style="color: var(--color-acento); margin-bottom: 30px;">🎓 Programas Académicos y Materias</h2>
+                    
+                    <div class="process-card">
+                        <div class="process-title">🎓 GESTIÓN DE PROGRAMAS ACADÉMICOS</div>
+                        <div class="process-location">📍 Ubicación: Módulo Administración → Programas Académicos</div>
+                        <div class="process-description">
+                            Registro de licenciaturas y maestrías con definición de períodos y materias por nivel.
+                        </div>
+                        
+                        <div class="process-steps">
+                            <div class="step">
+                                <div class="step-title">📝 REGISTRO DE PROGRAMA:</div>
+                                <div class="step-content">
+                                    <strong>Información del programa académico:</strong><br>
+                                    • <strong>Nombre del programa:</strong> Ej: "Licenciatura en Administración"<br>
+                                    &nbsp;&nbsp;&nbsp;→ El usuario define si es licenciatura o maestría en el nombre<br>
+                                    • <strong>Tipo de período:</strong> Semestre, Bimestre, Cuatrimestre, etc.<br>
+                                    • <strong>Número de períodos:</strong> Total de períodos del programa<br>
+                                    &nbsp;&nbsp;&nbsp;→ Ej: 9 cuatrimestres, 8 semestres<br><br>
+                                    
+                                    <strong>Acciones disponibles:</strong><br>
+                                    • ✏️ Editar información del programa<br>
+                                    • 🗑️ Eliminar programa (si no tiene alumnos inscritos)<br>
+                                    • 📚 Configurar materias del programa
+                                </div>
+                            </div>
+                            
+                            <div class="step">
+                                <div class="step-title">📚 REGISTRO DE MATERIAS:</div>
+                                <div class="step-content">
+                                    <strong>Por cada programa registrado:</strong><br>
+                                    • Seleccionar el programa de la lista<br>
+                                    • Se muestran los períodos definidos (1 al N)<br>
+                                    • Por cada período, agregar las materias correspondientes<br>
+                                    • Nombre de la materia para ese período específico<br><br>
+                                    
+                                    <strong>Ejemplo para Licenciatura de 9 cuatrimestres:</strong><br>
+                                    • Cuatrimestre 1: Matemáticas I, Administración I, etc.<br>
+                                    • Cuatrimestre 2: Matemáticas II, Contabilidad I, etc.<br>
+                                    • ... hasta Cuatrimestre 9
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="result-box">
+                            <h4>✅ IMPACTO:</h4>
+                            • Base para inscripciones • Estructura académica definida • Asignación de profesores • Control de kardex
+                        </div>
+                    </div>
+
+                    <h2 style="color: var(--color-acento); margin-bottom: 30px;">💰 Catálogo de Cuotas</h2>
+
+                    <div class="process-card">
+                        <div class="process-title">💰 GESTIÓN DE CUOTAS</div>
+                        <div class="process-location">📍 Ubicación: Módulo Administración → Cuotas</div>
+                        <div class="process-description">
+                            Definición de conceptos de pago y sus montos correspondientes.
+                        </div>
+                        
+                        <div class="process-steps">
+                            <div class="step">
+                                <div class="step-title">📝 REGISTRO DE CUOTA:</div>
+                                <div class="step-content">
+                                    <strong>Campos requeridos:</strong><br>
+                                    • <strong>Nombre de la cuota:</strong> Concepto de pago<br>
+                                    &nbsp;&nbsp;&nbsp;→ Inscripción, Colegiatura, Examen, Título, etc.<br>
+                                    • <strong>Monto:</strong> Cantidad en pesos mexicanos<br><br>
+                                    
+                                    <strong>Gestión:</strong><br>
+                                    • ✏️ Editar nombre o monto<br>
+                                    • 🗑️ Eliminar cuota (si no hay pagos registrados)<br>
+                                    • Las cuotas aparecen en Módulo Ingresos al registrar pagos
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="result-box">
+                            <h4>✅ USO:</h4>
+                            Disponible en registro de pagos • Base para reportes financieros • Control de conceptos de cobro
+                        </div>
+                    </div>
+
+                    <h2 style="color: var(--color-acento); margin-bottom: 30px;">🏢 Sedes y Programas</h2>
+
+                    <div class="process-card">
+                        <div class="process-title">🏢 GESTIÓN DE SEDES</div>
+                        <div class="process-location">📍 Ubicación: Módulo Administración → Sedes</div>
+                        <div class="process-description">
+                            Registro de ubicaciones donde se imparten los programas académicos.
+                        </div>
+                        
+                        <div class="process-steps">
+                            <div class="step">
+                                <div class="step-title">📝 REGISTRO DE SEDE:</div>
+                                <div class="step-content">
+                                    <strong>Información básica:</strong><br>
+                                    • <strong>Nombre de la sede:</strong> Identificador único<br>
+                                    &nbsp;&nbsp;&nbsp;→ Ej: "Campus Centro", "Campus Norte"<br><br>
+                                    
+                                    <strong>Configuración de programas:</strong><br>
+                                    • Por cada sede registrada, seleccionar programas disponibles<br>
+                                    • Marcar qué programas académicos se imparten en esa sede<br>
+                                    • Un programa puede estar en múltiples sedes<br>
+                                    • Una sede puede tener múltiples programas
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="result-box">
+                            <h4>✅ IMPACTO:</h4>
+                            Control de oferta académica por ubicación • Asignación de grupos • Reportes por sede
+                        </div>
+                    </div>
+
+                    <h2 style="color: var(--color-acento); margin-bottom: 30px;">🚪 Salones y Grupos</h2>
+
+                    <div class="process-card">
+                        <div class="process-title">🚪 CATÁLOGO DE SALONES</div>
+                        <div class="process-location">📍 Ubicación: Módulo Administración → Salones</div>
+                        <div class="process-description">
+                            Registro simple de espacios físicos disponibles para clases.
+                        </div>
+                        
+                        <div class="process-steps">
+                            <div class="step">
+                                <div class="step-title">📝 GESTIÓN DE SALONES:</div>
+                                <div class="step-content">
+                                    <strong>Registro básico:</strong><br>
+                                    • <strong>Nombre del salón:</strong> Identificador interno<br>
+                                    &nbsp;&nbsp;&nbsp;→ Ej: "A-101", "Lab. Cómputo 1", "Auditorio"<br>
+                                    • ✏️ Editar nombre del salón<br>
+                                    • 🗑️ Eliminar si no está asignado a grupos
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="process-card">
+                        <div class="process-title">👥 CATÁLOGO DE GRUPOS</div>
+                        <div class="process-location">📍 Ubicación: Módulo Administración → Grupos</div>
+                        <div class="process-description">
+                            Definición de grupos académicos y su asignación a salones.
+                        </div>
+                        
+                        <div class="process-steps">
+                            <div class="step">
+                                <div class="step-title">📝 REGISTRO DE GRUPO:</div>
+                                <div class="step-content">
+                                    <strong>Información del grupo:</strong><br>
+                                    • <strong>Nombre del grupo:</strong> Identificador único<br>
+                                    &nbsp;&nbsp;&nbsp;→ Ej: "ADM-4A", "CONT-2B", "ING-1C"<br>
+                                    • <strong>Salón asignado:</strong> Seleccionar del catálogo de salones<br>
+                                    &nbsp;&nbsp;&nbsp;→ Donde el grupo tomará sus clases regularmente<br><br>
+                                    
+                                    <strong>Gestión:</strong><br>
+                                    • ✏️ Cambiar nombre o salón asignado<br>
+                                    • 🗑️ Eliminar grupo sin alumnos activos
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="result-box">
+                            <h4>✅ USO:</h4>
+                            Asignación de alumnos • Horarios de clase • Control de asistencia • Listas por grupo
+                        </div>
+                    </div>
+
+                    <h2 style="color: var(--color-acento); margin-bottom: 30px;">👨‍🏫 Categorías de Profesores</h2>
+
+                    <div class="process-card">
+                        <div class="process-title">👨‍🏫 GESTIÓN DE CATEGORÍAS DOCENTES</div>
+                        <div class="process-location">📍 Ubicación: Módulo Administración → Categorías Profesores</div>
+                        <div class="process-description">
+                            Definición de categorías laborales y sus tarifas por hora.
+                        </div>
+                        
+                        <div class="process-steps">
+                            <div class="step">
+                                <div class="step-title">📝 REGISTRO DE CATEGORÍA:</div>
+                                <div class="step-content">
+                                    <strong>Información de la categoría:</strong><br>
+                                    • <strong>Nombre de categoría:</strong> Tipo de contratación<br>
+                                    &nbsp;&nbsp;&nbsp;→ Ej: "Tiempo Completo", "Medio Tiempo", "Por Hora"<br>
+                                    • <strong>Pago por hora:</strong> Tarifa en pesos mexicanos<br>
+                                    &nbsp;&nbsp;&nbsp;→ Base para cálculo de nómina docente<br><br>
+                                    
+                                    <strong>Nota:</strong> Cada clase asignada equivale a 4 horas laborales
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="result-box">
+                            <h4>✅ IMPACTO:</h4>
+                            Cálculo automático de pagos • Control de nómina docente
+                        </div>
+                    </div>
+
+                    <h2 style="color: var(--color-acento); margin-bottom: 30px;">📊 Estatus de Alumnos</h2>
+
+                    <div class="process-card">
+                        <div class="process-title">📊 CATÁLOGO DE ESTATUS</div>
+                        <div class="process-location">📍 Ubicación: Módulo Administración → Estatus Alumnos</div>
+                        <div class="process-description">
+                            Definición de los diferentes estados académicos de los estudiantes.
+                        </div>
+                        
+                        <div class="process-steps">
+                            <div class="step">
+                                <div class="step-title">📝 GESTIÓN DE ESTATUS:</div>
+                                <div class="step-content">
+                                    <strong>Estados disponibles:</strong><br>
+                                    • <strong>Aprobado:</strong> Aprobó el período<br>
+                                    • <strong>Reprobado:</strong> No aprobó el período<br>
+                                    • <strong>No presentó:</strong> No realizó el examen final<br>
+                                    • <strong>No cursó:</strong> Excedió el límite de faltas<br>
+                                    • <strong>Revalidación:</strong> Ingresó en segundo semestre u otros más adelante<br><br>
+                                    
+                                    Se pueden agregar más estados según necesidades
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h2 style="color: var(--color-acento); margin-bottom: 30px;">📅 Cuatrimestres/Períodos Académicos</h2>
+
+                    <div class="process-card">
+                        <div class="process-title">📅 GESTIÓN DE PERÍODOS ACADÉMICOS</div>
+                        <div class="process-location">📍 Ubicación: Módulo Administración → Cuatrimestres</div>
+                        <div class="process-description">
+                            Configuración de períodos académicos con fechas y materias habilitadas.
+                        </div>
+                        
+                        <div class="process-steps">
+                            <div class="step">
+                                <div class="step-title">📝 REGISTRO DE PERÍODO:</div>
+                                <div class="step-content">
+                                    <strong>Información del período:</strong><br>
+                                    • <strong>Nombre:</strong> Ej: "Enero - Abril 2025"<br>
+                                    • <strong>Fecha de inicio:</strong> Inicio de clases<br>
+                                    • <strong>Fecha de fin:</strong> Término del período<br><br>
+                                    
+                                    <strong>⚠️ Importante para reinscripciones:</strong><br>
+                                    • A partir de la fecha de inicio, alumnos tienen 30 días para pagar<br>
+                                    • El sistema muestra aviso automático en plataforma de alumnos<br>
+                                    • Pueden generar formato de pago desde su portal
+                                </div>
+                            </div>
+                            
+                            <div class="step">
+                                <div class="step-title">📚 HABILITACIÓN DE NIVELES:</div>
+                                <div class="step-content">
+                                    <strong>Por cada período registrado:</strong><br>
+                                    • Seleccionar niveles que se impartirán<br>
+                                    • Habilitar materias correspondientes<br>
+                                    • Basado en catálogo de Programas Académicos<br>
+                                    • Define qué se puede cursar en ese período
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="result-box">
+                            <h4>✅ FUNCIONALIDAD:</h4>
+                            Control de reinscripciones • Avisos automáticos • Generación de pagos • Oferta académica del período
+                        </div>
+                    </div>
+
+                    <h2 style="color: var(--color-acento); margin-bottom: 30px;">🏭 Catálogo de Giros</h2>
+
+                    <div class="process-card">
+                        <div class="process-title">🏭 GESTIÓN DE GIROS COMERCIALES</div>
+                        <div class="process-location">📍 Ubicación: Módulo Administración → Giros</div>
+                        <div class="process-description">
+                            Catálogo simple de giros comerciales para clasificación de proveedores.
+                        </div>
+                        
+                        <div class="process-steps">
+                            <div class="step">
+                                <div class="step-title">📝 REGISTRO DE GIRO:</div>
+                                <div class="step-content">
+                                    <strong>Información básica:</strong><br>
+                                    • <strong>Nombre del giro:</strong> Tipo de actividad comercial<br>
+                                    &nbsp;&nbsp;&nbsp;→ Ej: "Papelería", "Servicios de limpieza", "Tecnología"<br>
+                                    • ✏️ Editar nombre del giro<br>
+                                    • 🗑️ Eliminar si no hay proveedores asignados<br><br>
+                                    
+                                    <strong>Uso:</strong> Clasificación en registro de proveedores
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="warning-box">
+                        <h4>⚠️ NOTA IMPORTANTE:</h4>
+                        Todos los catálogos permiten edición y eliminación de registros.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PÁGINA MÓDULO PROFESORES -->
+        <div id="profesores" class="page">
+            <div class="module-page">
+                <div class="module-page-header academico">
+                    <h1>👨‍🏫 MÓDULO PROFESORES</h1>
+                    <p>Gestión del personal docente y control académico</p>
+                </div>
+                <div class="module-page-content">
+                    <h2 style="color: var(--color-principal); margin-bottom: 30px;">📝 Registro de Profesores</h2>
+                    
+                    <div class="process-card">
+                        <div class="process-title">👨‍🏫 REGISTRAR NUEVO PROFESOR</div>
+                        <div class="process-location">📍 Ubicación: Módulo Profesores → Registro de Profesores</div>
+                        <div class="process-description">
+                            Registro completo de docentes con información personal y disponibilidad horaria.
+                        </div>
+                        
+                        <div class="process-steps">
+                            <div class="step">
+                                <div class="step-title">📋 INFORMACIÓN DEL PROFESOR:</div>
+                                <div class="step-content">
+                                    <strong>Datos personales:</strong><br>
+                                    • Nombre completo del docente<br>
+                                    • RFC y datos de contacto<br>
+                                    • Categoría docente (del catálogo)<br>
+                                    • Información bancaria<br><br>
+                                    
+                                    <strong>La categoría determina:</strong><br>
+                                    • Pago por hora asignado<br>
+                                    • Base para cálculo de nómina
+                                </div>
+                            </div>
+                            
+                            <div class="step">
+                                <div class="step-title">⏰ DISPONIBILIDAD HORARIA:</div>
+                                <div class="step-content">
+                                    <strong>Configuración por día de la semana:</strong><br>
+                                    • Por cada día, definir horario disponible<br>
+                                    • Horario de entrada y salida<br>
+                                    • Puede tener diferentes horarios por día<br><br>
+                                    
+                                    <strong>Nota:</strong> La disponibilidad ya está registrada para la oferta actual<br>
+                                    Solo se modifica cuando cambian los horarios del profesor
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="result-box">
+                            <h4>✅ RESULTADO:</h4>
+                            Profesor disponible para asignación • Horarios definidos • Categoría y pago establecidos
+                        </div>
+                    </div>
+
+                    <h2 style="color: var(--color-principal); margin-bottom: 30px;">📚 Asignación de Materias</h2>
+
+                    <div class="process-card">
+                        <div class="process-title">📚 ASIGNAR MATERIAS A PROFESORES</div>
+                        <div class="process-location">📍 Ubicación: Módulo Profesores → Asignación de Materias</div>
+                        <div class="process-description">
+                            Sistema de asignación mediante filtros y calendario con fechas específicas por profesor.
+                        </div>
+                        
+                        <div class="process-steps">
+                            <div class="step">
+                                <div class="step-title">🔍 FILTRADO INICIAL:</div>
+                                <div class="step-content">
+                                    <strong>Seleccionar en orden:</strong><br>
+                                    1. <strong>Sede:</strong> Campus donde se impartirá<br>
+                                    2. <strong>Programa académico:</strong> Licenciatura o maestría<br>
+                                    3. <strong>Ciclo:</strong> Período académico actual<br>
+                                    4. <strong>Nivel/Cuatrimestre:</strong> 1º, 2º, 3º, etc.<br><br>
+                                    
+                                    <strong>Al completar filtros se muestra:</strong><br>
+                                    • Lista de materias del nivel seleccionado<br>
+                                    • Lista de profesores disponibles
+                                </div>
+                            </div>
+                            
+                            <div class="step">
+                                <div class="step-title">📅 PROCESO DE ASIGNACIÓN:</div>
+                                <div class="step-content">
+                                    <strong>Por cada profesor, clic en ícono de asignación:</strong><br>
+                                    • Se abre mini formulario de asignación<br>
+                                    • <strong>Seleccionar materia:</strong> De las disponibles en el nivel<br>
+                                    • <strong>Seleccionar grupo:</strong> Del catálogo de grupos<br>
+                                    • <strong>Seleccionar salón:</strong> Donde se impartirá<br><br>
+                                    
+                                    <strong>Selección de fechas:</strong><br>
+                                    • Aparece tabla con días disponibles del ciclo<br>
+                                    • Solo se muestran días según disponibilidad del profesor<br>
+                                    • Marcar casillas de las fechas deseadas<br>
+                                    • Clic en "Asignar fechas" para confirmar
+                                </div>
+                            </div>
+                            
+                            <div class="step">
+                                <div class="step-title">📆 VISUALIZACIÓN EN CALENDARIO:</div>
+                                <div class="step-content">
+                                    <strong>Las asignaciones aparecen en calendario como:</strong><br>
+                                    • Pequeños recuadros en cada día asignado<br>
+                                    • Información visible: Profesor, Materia, Grupo<br>
+                                    • Clic en recuadro para registrar asistencia
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="result-box">
+                            <h4>✅ FUNCIONALIDAD:</h4>
+                            Control total de asignaciones • Vista calendario • Base para asistencias • Cálculo de horas
+                        </div>
+                        
+                        <div class="warning-box">
+                            <h4>⚠️ IMPORTANTE:</h4>
+                            • Cada clase asignada equivale a 4 horas laborales • Verificar disponibilidad antes de asignar • No duplicar asignaciones
+                        </div>
+                    </div>
+
+                    <h2 style="color: var(--color-principal); margin-bottom: 30px;">✅ Control de Asistencias</h2>
+
+                    <div class="process-card">
+                        <div class="process-title">✅ REGISTRAR ASISTENCIAS DOCENTES</div>
+                        <div class="process-location">📍 Ubicación: Vista de Asignación → Calendario → Clic en clase</div>
+                        <div class="process-description">
+                            Registro manual de asistencias por el personal académico desde el calendario.
+                        </div>
+                        
+                        <div class="process-steps">
+                            <div class="step">
+                                <div class="step-title">📅 DESDE EL CALENDARIO:</div>
+                                <div class="step-content">
+                                    <strong>Proceso de registro:</strong><br>
+                                    • En calendario de asignaciones, ubicar el día<br>
+                                    • Clic en recuadro de la clase específica<br>
+                                    • Se abre formulario de asistencia<br><br>
+                                    
+                                    <strong>Opciones de registro:</strong><br>
+                                    • ✅ <strong>Asistencia:</strong> Profesor asistió normalmente<br>
+                                    • ❌ <strong>Falta:</strong> Profesor no se presentó<br>
+                                    • ⏰ <strong>Retardo:</strong> Llegó tarde<br>
+                                    &nbsp;&nbsp;&nbsp;→ Registrar hora de llegada real
+                                </div>
+                            </div>
+                            
+                            <div class="step">
+                                <div class="step-title">💰 IMPACTO EN PAGOS:</div>
+                                <div class="step-content">
+                                    <strong>Para cálculo de nómina:</strong><br>
+                                    • Asistencia = 4 horas pagadas<br>
+                                    • Retardo = Descuento proporcional<br>
+                                    • Falta = No se pagan las 4 horas<br><br>
+                                    
+                                    <strong>El cálculo considera:</strong><br>
+                                    • Total de clases asignadas en el período<br>
+                                    • Asistencias registradas<br>
+                                    • Tarifa por hora según categoría<br>
+                                    • Total = (Horas asistidas) × (Tarifa por hora)
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="result-box">
+                            <h4>✅ RESULTADO:</h4>
+                            Control de asistencia completo • Base para nómina • Historial por profesor • Reportes de asistencia
+                        </div>
+                    </div>
+
+                    <h2 style="color: var(--color-principal); margin-bottom: 30px;">📊 Calificaciones</h2>
+
+                    <div class="process-card">
+                        <div class="process-title">📊 REGISTRO DE CALIFICACIONES</div>
+                        <div class="process-location">📍 Ubicación: Módulo Profesores → Calificaciones</div>
+                        <div class="process-description">
+                            Sistema para registro de calificaciones finales del cuatrimestre con comentarios.
+                        </div>
+                        
+                        <div class="process-steps">
+                            <div class="step">
+                                <div class="step-title">📝 REGISTRO POR PROFESOR:</div>
+                                <div class="step-content">
+                                    <strong>Proceso actual:</strong><br>
+                                    • Profesor accede a sus grupos asignados<br>
+                                    • Selecciona materia y grupo<br>
+                                    • Ve lista de alumnos inscritos<br><br>
+                                    
+                                    <strong>Por cada alumno registra:</strong><br>
+                                    • <strong>Calificación final:</strong> Nota numérica del cuatrimestre<br>
+                                    • <strong>Comentarios:</strong> Observaciones del desempeño<br>
+                                    &nbsp;&nbsp;&nbsp;→ Participación, áreas de mejora, etc.
+                                </div>
+                            </div>
+                            
+                            <div class="step">
+                                <div class="step-title">📈 INTEGRACIÓN CON EXPEDIENTES:</div>
+                                <div class="step-content">
+                                    <strong>Las calificaciones:</strong><br>
+                                    • Se reflejan automáticamente en expediente del alumno<br>
+                                    • Actualizan el promedio general<br>
+                                    • Actualizan promedio por cuatrimestre<br>
+                                    • Disponibles para generar kardex<br><br>
+                                    
+                                    <strong>Nota:</strong> Por ahora solo calificaciones finales<br>
+                                    No se registran parciales durante el cuatrimestre
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="result-box">
+                            <h4>✅ FUNCIONALIDAD:</h4>
+                            Control académico • Expedientes actualizados • Base para kardex • Historial académico
+                        </div>
+                    </div>
+
+                    <h2 style="color: var(--color-principal); margin-bottom: 30px;">📊 Gestión de Grupos</h2>
+
+                    <div class="process-card">
+                        <div class="process-title">👥 ADMINISTRACIÓN DE GRUPOS</div>
+                        <div class="process-location">📍 Ubicación: Módulo Profesores → Grupos</div>
+                        <div class="process-description">
+                            Control de grupos académicos e inscripciones de alumnos.
+                        </div>
+                        
+                        <div class="process-steps">
+                            <div class="step">
+                                <div class="step-title">📋 GESTIÓN DE INSCRIPCIONES:</div>
+                                <div class="step-content">
+                                    <strong>Funcionalidades disponibles:</strong><br>
+                                    • Ver grupos asignados al profesor<br>
+                                    • Consultar lista de alumnos por grupo<br>
+                                    • Verificar capacidad del grupo<br>
+                                    • Control de alumnos inscritos<br><br>
+                                    
+                                    <strong>Información visible:</strong><br>
+                                    • Nombre del alumno<br>
+                                    • Casilla para confirmar inscripción
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PÁGINA MÓDULO ALUMNOS -->
+        <div id="alumnos" class="page">
+            <div class="module-page">
+                <div class="module-page-header academico">
+                    <h1>👨‍🎓 MÓDULO ALUMNOS</h1>
+                    <p>Control estudiantil integral y seguimiento académico</p>
+                </div>
+                <div class="module-page-content">
+                    <h2 style="color: var(--color-principal); margin-bottom: 30px;">📝 Registro de Alumnos</h2>
+                    
+                    <div class="process-card">
+                        <div class="process-title">👨‍🎓 REGISTRAR NUEVO ALUMNO</div>
+                        <div class="process-location">📍 Ubicación: Módulo Alumnos → Registro de Alumno</div>
+                        <div class="process-description">
+                            Registro completo del estudiante con información personal, académica y documentación.
+                        </div>
+                        
+                        <div class="process-steps">
+                            <div class="step">
+                                <div class="step-title">📋 INFORMACIÓN PERSONAL:</div>
+                                <div class="step-content">
+                                    <strong>Datos básicos del alumno:</strong><br>
+                                    • Nombre completo<br>
+                                    • CURP y fecha de nacimiento<br>
+                                    • Dirección completa<br>
+                                    • Teléfonos de contacto<br>
+                                    • Correo electrónico<br>
+                                    • Fecha de ingreso
+                                </div>
+                            </div>
+                            
+                            <div class="step">
+                                <div class="step-title">🎓 INFORMACIÓN ACADÉMICA:</div>
+                                <div class="step-content">
+                                    <strong>Datos de inscripción:</strong><br>
+                                    • Programa académico (licenciatura/maestría)<br>
+                                    • Sede de inscripción<br>
+                                    • Grupo asignado<br>
+                                    • Cuatrimestre de ingreso<br>
+                                    • Matrícula (generada automáticamente)<br>
+                                    • Estado inicial: Aspirante
+                                </div>
+                            </div>
+                            
+                            <div class="step">
+                                <div class="step-title">📄 DOCUMENTACIÓN:</div>
+                                <div class="step-content">
+                                    <strong>Proceso de documentos:</strong><br>
+                                    • <strong>Subir archivo único:</strong> PDF con todos los documentos<br>
+                                    &nbsp;&nbsp;&nbsp;→ Acta de nacimiento, certificados, CURP, etc.<br>
+                                    • <strong>Marcar estado:</strong> Expediente completo o incompleto<br>
+                                    • El sistema registra fecha de carga<br><br>
+                                    
+                                    <strong>Importante:</strong> Un solo archivo con todo escaneado
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="result-box">
+                            <h4>✅ RESULTADO:</h4>
+                            • Alumno activo en sistema • Matrícula generada • Listo para pagos • Expediente iniciado
+                        </div>
+                    </div>
+
+                    <h2 style="color: var(--color-principal); margin-bottom: 30px;">📂 Expedientes de Alumnos</h2>
+
+                    <div class="process-card">
+                        <div class="process-title">📂 CONSULTAR Y GESTIONAR EXPEDIENTE</div>
+                        <div class="process-location">📍 Ubicación: Módulo Alumnos → Expedientes</div>
+                        <div class="process-description">
+                            Vista completa del historial académico y administrativo del alumno.
+                        </div>
+                        
+                        <div class="process-steps">
+                            <div class="step">
+                                <div class="step-title">📊 INFORMACIÓN ACADÉMICA:</div>
+                                <div class="step-content">
+                                    <strong>Datos visibles en expediente:</strong><br>
+                                    • <strong>Promedio general:</strong> Calculado automáticamente<br>
+                                    • <strong>Promedio por cuatrimestre:</strong> Desglose por período<br>
+                                    • <strong>Calificaciones por materia:</strong> Historial completo<br>
+                                    • <strong>Estado actual:</strong> Activo, Baja, Egresado, etc.<br>
+                                    • <strong>Avance curricular:</strong> Materias cursadas vs plan de estudios
+                                </div>
+                            </div>
+                            
+                            <div class="step">
+                                <div class="step-title">📋 ESTADO ADMINISTRATIVO:</div>
+                                <div class="step-content">
+                                    <strong>Información de control:</strong><br>
+                                    • <strong>Estado de documentos:</strong> Completo/Incompleto<br><br>
+                                    
+                                    <strong>Acciones disponibles:</strong><br>
+                                    • ✏️ Editar documentos y comentarios
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="result-box">
+                            <h4>✅ FUNCIONALIDAD:</h4>
+                            Vista 360° del alumno • Control académico completo • Base para decisiones • Historial unificado
+                        </div>
+                    </div>
+
+                    <h2 style="color: var(--color-principal); margin-bottom: 30px;">📄 Kardex Académico</h2>
+
+                    <div class="process-card">
+                        <div class="process-title">📄 GENERAR KARDEX (PROCESO PENDIENTE)</div>
+                        <div class="process-location">📍 Ubicación: Expediente del Alumno → Botón Generar Kardex</div>
+                        <div class="process-description">
+                            Generación de documento oficial PDF con historial académico completo.
+                        </div>
+                        
+                        <div class="process-steps">
+                            <div class="step">
+                                <div class="step-title">📋 CONTENIDO DEL KARDEX:</div>
+                                <div class="step-content">
+                                    <strong>El PDF incluye:</strong><br>
+                                    • Datos personales del alumno<br>
+                                    • Programa académico y matrícula<br>
+                                    • Tabla de calificaciones por cuatrimestre<br>
+                                    • Promedio general y por período<br>
+                                    • Materias cursadas vs plan de estudios<br>
+                                    • Fecha de generación y sello digital<br><br>
+                                    
+                                    <strong>Formato:</strong> Especificaciones institucionales predefinidas
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="result-box">
+                            <h4>✅ USO:</h4>
+                            Documento oficial • Trámites académicos • Constancia de estudios • Archivo institucional
+                        </div>
+                    </div>
+
+                    <h2 style="color: var(--color-principal); margin-bottom: 30px;">📊 Control de Calificaciones</h2>
+
+                    <div class="process-card">
+                        <div class="process-title">📊 GESTIÓN DE CALIFICACIONES POR GRUPO</div>
+                        <div class="process-location">📍 Ubicación: Módulo Alumnos → Calificaciones</div>
+                        <div class="process-description">
+                            Sistema para consulta y edición de calificaciones por grupos completos.
+                        </div>
+                        
+                        <div class="process-steps">
+                            <div class="step">
+                                <div class="step-title">🔍 CONSULTA POR GRUPO:</div>
+                                <div class="step-content">
+                                    <strong>Proceso de consulta:</strong><br>
+                                    • Seleccionar programa académico<br>
+                                    • Seleccionar cuatrimestre<br>
+                                    • Seleccionar grupo<br>
+                                    • Ver tabla con todos los alumnos<br><br>
+                                    
+                                    <strong>Información mostrada:</strong><br>
+                                    • Lista de alumnos del grupo<br>
+                                    • Calificaciones por materia<br>
+                                    • Promedio del período<br>
+                                    • Estado académico
+                                </div>
+                            </div>
+                            
+                            <div class="step">
+                                <div class="step-title">✏️ EDICIÓN MASIVA:</div>
+                                <div class="step-content">
+                                    <strong>Capacidades de edición:</strong><br>
+                                    • Modificar calificaciones individuales<br>
+                                    • Actualización de promedios automática<br>
+                                    • Guardar cambios por lote<br>
+                                    • Historial de modificaciones<br><br>
+                                    
+                                    <strong>Permisos:</strong> Solo usuarios autorizados pueden editar
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h2 style="color: var(--color-principal); margin-bottom: 30px;">💳 Reinscripciones y Pagos</h2>
+
+                    <div class="process-card">
+                        <div class="process-title">🔄 PROCESO DE REINSCRIPCIÓN</div>
+                        <div class="process-location">📍 Ubicación: Plataforma de Alumnos (Portal Estudiantil)</div>
+                        <div class="process-description">
+                            Sistema automatizado de reinscripción conectado con períodos académicos.
+                        </div>
+                        
+                        <div class="process-steps">
+                            <div class="step">
+                                <div class="step-title">⏰ PERÍODO DE REINSCRIPCIÓN:</div>
+                                <div class="step-content">
+                                    <strong>Proceso automático:</strong><br>
+                                    • Al iniciar nuevo cuatrimestre (fecha de inicio)<br>
+                                    • Alumno tiene 30 días para realizar pago<br>
+                                    • <strong>Aviso automático</strong> en plataforma del alumno<br>
+                                    • Contador de días restantes visible<br><br>
+                                    
+                                    <strong>El sistema considera:</strong><br>
+                                    • Fecha de inicio del período (Catálogo Cuatrimestres)<br>
+                                    • Estado del alumno (debe ser Activo)<br>
+                                    • Adeudos pendientes (deben estar al corriente)
+                                </div>
+                            </div>
+                            
+                            <div class="step">
+                                <div class="step-title">📄 GENERACIÓN DE FORMATO:</div>
+                                <div class="step-content">
+                                    <strong>Desde plataforma del alumno:</strong><br>
+                                    • Botón "Generar formato de pago"<br>
+                                    • Se genera PDF con referencia única<br>
+                                    • Incluye monto a pagar<br><br>
+                                    
+                                    <strong>Con el formato puede:</strong><br>
+                                    • Pagar de forma presencial en caja<br>
+                                    • Al registrarse el pago → Reinscripción automática<br>
+                                    • Estado actualizado a "Alta" para el periodo
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="result-box">
+                            <h4>✅ BENEFICIOS:</h4>
+                            Proceso automatizado • Control de tiempos • Reducción de filas • Registro inmediato • Avisos oportunos
+                        </div>
+                        
+                        <div class="warning-box">
+                            <h4>⚠️ IMPORTANTE:</h4>
+                            • Después de 30 días sin pago, revisar estado del alumno<br>
+                            • Verificar adeudos previos antes de reinscripción<br>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PÁGINA TROUBLESHOOTING -->
+        <div id="troubleshooting" class="page">
+            <div class="module-page">
+                <div class="module-page-header soporte">
+                    <h1>🛠️ SOLUCIÓN DE PROBLEMAS</h1>
+                    <p>Errores frecuentes y soluciones paso a paso</p>
+                </div>
+                
+                <div class="module-page-content">
+                    <h2 style="color: var(--color-warning); margin-bottom: 30px;">💰 Problemas Módulo Ingresos</h2>
+                    
+                    <div class="process-card">
+                        <div class="process-title">❌ ERROR: "El alumno no aparece en la lista"</div>
+                        <div class="process-location">📍 Ubicación: Registro de Ingresos → Campo Nombre</div>
+                        <div class="process-description">
+                            Problema al intentar registrar pago y no encontrar alumno en lista desplegable.
+                        </div>
+                        
+                        <div class="process-steps">
+                            <div class="step">
+                                <div class="step-title">🔍 CAUSAS PROBABLES:</div>
+                                <div class="step-content">
+                                    • El alumno no está registrado en el Módulo Alumnos<br>
+                                    • Error en el nombre al buscar<br>
+                                    • El alumno fue dado de baja<br>
+                                    • Problema de sincronización
+                                </div>
+                            </div>
+                            
+                            <div class="step">
+                                <div class="step-title">✅ SOLUCIÓN:</div>
+                                <div class="step-content">
+                                    <strong>1. Verificar registro:</strong><br>
+                                    • Ir a Módulo Alumnos → Alumnos<br>
+                                    • Buscar alumno en tabla principal<br>
+                                    • Verificar estatus "Activo"<br><br>
+                                    
+                                    <strong>2. Si no está registrado:</strong><br>
+                                    • Clic "Registrar nuevo alumno"<br>
+                                    • Llenar formulario completo<br>
+                                    • Guardar y verificar en lista<br><br>
+                                    
+                                    <strong>3. Si persiste:</strong><br>
+                                    • Refrescar página (F5)<br>
+                                    • Contactar soporte técnico
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="result-box">
+                            <h4>✅ RESULTADO:</h4>
+                            El alumno aparece en la lista y se puede registrar el pago
+                        </div>
+                    </div>
+
+                    <h2 style="color: var(--color-warning); margin-bottom: 30px;">🚨 Contactos de Soporte</h2>
+
+                    <div class="process-card">
+                        <div class="process-title">📞 INFORMACIÓN DE CONTACTO</div>
+                        <div class="process-location">📍 Disponible 24/7 para problemas críticos</div>
+                        <div class="process-description">
+                            Canales de comunicación para resolución de problemas técnicos.
+                        </div>
+                        
+                        <div class="process-steps">
+                            <div class="step">
+                                <div class="step-title">🏢 SOPORTE TÉCNICO:</div>
+                                <div class="step-content">
+                                    <strong>Para soporte técnico y consultas:</strong><br>
+                                    🏢 <strong>Empresa:</strong> BriefData<br>
+                                    📍 <strong>Disponibilidad:</strong> Soporte profesional<br>
+                                    🎯 <strong>Servicios:</strong> Implementación, capacitación y mantenimiento<br><br>
+                                    
+                                    <strong>Canales de comunicación:</strong><br>
+                                    • WhatsApp: Mediante mensaje al grupo en el que se encuentra el personal<br>
+                                    • Documentación técnica disponible
+                                </div>
+                            </div>
+                            
+                            <div class="step">
+                                <div class="step-title">🚨 PROCEDIMIENTO DE ESCALACIÓN:</div>
+                                <div class="step-content">
+                                    <strong>Niveles de soporte:</strong><br>
+                                    • <strong>Nivel 1:</strong> Problemas operativos básicos<br>
+                                    • <strong>Nivel 2:</strong> Problemas técnicos complejos<br>
+                                    • <strong>Nivel 3:</strong> Problemas críticos del sistema<br><br>
+                                    
+                                    <strong>Tiempo de respuesta:</strong><br>
+                                    • Crítico: Respuesta inmediata<br>
+                                    • Alto: Dentro de 2 horas<br>
+                                    • Normal: Dentro de 24 horas
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="warning-box">
+                            <h4>⚠️ INFORMACIÓN AL CONTACTAR:</h4>
+                            • Describir el problema específico • Indicar módulo afectado • Proporcionar hora exacta del error • Captura o video del problema (opcional)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Función principal para mostrar páginas
+        function showPage(pageId) {
+            console.log('Intentando mostrar página:', pageId);
+            
+            // Ocultar todas las páginas
+            const pages = document.querySelectorAll('.page');
+            pages.forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // Mostrar página seleccionada
+            const targetPage = document.getElementById(pageId);
+            if (targetPage) {
+                targetPage.classList.add('active');
+                console.log('Página encontrada y mostrada:', pageId);
+            } else {
+                console.error('Página no encontrada:', pageId);
+                // Si no encuentra la página, volver al overview
+                document.getElementById('overview').classList.add('active');
+            }
+            
+            // Actualizar navegación
+            const navButtons = document.querySelectorAll('.nav-btn');
+            navButtons.forEach(btn => {
+                btn.classList.remove('active');
+                
+                // Verificar si este botón corresponde a la página actual
+                const onclickAttr = btn.getAttribute('onclick');
+                if (onclickAttr && onclickAttr.includes(pageId)) {
+                    btn.classList.add('active');
+                }
+            });
+            
+            // Mostrar/ocultar botón de regreso
+            const backButton = document.querySelector('.back-button');
+            if (pageId === 'overview') {
+                backButton.style.display = 'none';
+            } else {
+                backButton.style.display = 'block';
+            }
+            
+            // Scroll to top
+            window.scrollTo(0, 0);
+        }
+
+        // Función de búsqueda
+        function quickSearch() {
+            const searchTerm = prompt('🔍 Buscar en el manual:');
+            if (searchTerm && searchTerm.trim() !== '') {
+                const term = searchTerm.toLowerCase().trim();
+                const pages = document.querySelectorAll('.page');
+                let found = false;
+                let foundPage = null;
+                
+                pages.forEach(page => {
+                    const pageText = page.textContent.toLowerCase();
+                    if (pageText.includes(term)) {
+                        foundPage = page;
+                        found = true;
+                        return;
+                    }
+                });
+                
+                if (found && foundPage) {
+                    showPage(foundPage.id);
+                    
+                    setTimeout(() => {
+                        const elements = foundPage.querySelectorAll('*');
+                        elements.forEach(el => {
+                            if (el.children.length === 0 && el.textContent.toLowerCase().includes(term)) {
+                                el.style.backgroundColor = '#fef3c7';
+                                el.style.padding = '2px 4px';
+                                el.style.borderRadius = '3px';
+                                el.style.transition = 'all 0.3s ease';
+                                
+                                setTimeout(() => {
+                                    el.style.backgroundColor = '';
+                                    el.style.padding = '';
+                                }, 5000);
+                            }
+                        });
+                    }, 100);
+                    
+                    alert(`✅ Término "${searchTerm}" encontrado y resaltado`);
+                } else {
+                    alert(`❌ No se encontró "${searchTerm}" en el manual`);
+                }
+            }
+        }
+
+        // Información del manual
+        function showInfo() {
+            const moduleCount = document.querySelectorAll('.module-card').length;
+            const pageCount = document.querySelectorAll('.page').length;
+            
+            alert(`📊 Manual Sistema CEUG
+
+📄 Páginas disponibles: ${pageCount}
+🏢 Módulos documentados: ${moduleCount}
+
+⌨️ Atajos útiles:
+• Ctrl+F: Buscar en el manual
+• Ctrl+H: Ir al inicio  
+• Esc: Regresar al menú
+
+🏢 Desarrollado por: BriefData.
+📅 Versión: 1.0 - Septiembre 2025
+
+🎯 Manual integral para administración del sistema CEUG.`);
+        }
+
+        // Atajos de teclado
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey || e.metaKey) {
+                switch(e.key) {
+                    case 'f':
+                        e.preventDefault();
+                        quickSearch();
+                        break;
+                    case 'h':
+                        e.preventDefault();
+                        showPage('overview');
+                        break;
+                }
+            }
+            
+            if (e.key === 'Escape') {
+                showPage('overview');
+            }
+        });
+
+        // Inicialización al cargar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Manual CEUG cargado');
+            
+            // Verificar que todas las páginas existan
+            const pageIds = ['overview', 'ingresos', 'egresos', 'contabilidad', 'personal', 
+                           'proveedores', 'administracion', 'profesores', 'alumnos', 'troubleshooting'];
+            
+            pageIds.forEach(id => {
+                if (!document.getElementById(id)) {
+                    console.warn('Página no encontrada:', id);
+                }
+            });
+            
+            // Asegurar que solo overview esté activo al inicio
+            const activePages = document.querySelectorAll('.page.active');
+            if (activePages.length > 1) {
+                activePages.forEach(page => {
+                    if (page.id !== 'overview') {
+                        page.classList.remove('active');
+                    }
+                });
+            }
+            
+            // Ocultar botón de regreso en la página principal
+            const backButton = document.querySelector('.back-button');
+            backButton.style.display = 'none';
+        });
+    </script>
+</body>
+</html>
